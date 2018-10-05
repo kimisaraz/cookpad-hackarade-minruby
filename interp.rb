@@ -7,9 +7,9 @@ def evaluate(exp, env)
 
   case exp[0]
 
-#
-## Problem 1: Arithmetics
-#
+  #
+  ## Problem 1: Arithmetics
+  #
 
   when "lit"
     exp[1] # return the immediate value as is
@@ -17,25 +17,34 @@ def evaluate(exp, env)
   when "+"
     evaluate(exp[1], env) + evaluate(exp[2], env)
   when "-"
-    # Subtraction.  Please fill in.
-    # Use the code above for addition as a reference.
-    # (Almost just copy-and-paste.  This is an exercise.)
-    raise(NotImplementedError) # Problem 1
+    evaluate(exp[1], env) - evaluate(exp[2], env)
   when "*"
-    raise(NotImplementedError) # Problem 1
-  # ... Implement other operators that you need
+    evaluate(exp[1], env) * evaluate(exp[2], env)
+  when "/"
+    evaluate(exp[1], env) / evaluate(exp[2], env)
+  when "%"
+    evaluate(exp[1], env) % evaluate(exp[2], env)
+  when ">"
+    evaluate(exp[1], env) > evaluate(exp[2], env)
+  when "<"
+    evaluate(exp[1], env) < evaluate(exp[2], env)
+  when "=="
+    evaluate(exp[1], env) == evaluate(exp[2], env)
 
-  
-#
-## Problem 2: Statements and variables
-#
+  #
+  ## Problem 2: Statements and variables
+  #
 
   when "stmts"
     # Statements: sequential evaluation of one or more expressions.
     #
     # Advice 1: Insert `pp(exp)` and observe the AST first.
     # Advice 2: Apply `evaluate` to each child of this node.
-    raise(NotImplementedError) # Problem 2
+    i = 1
+    while exp[i]
+      evaluate(exp[i], env)
+      i = i + 1
+    end
 
   # The second argument of this method, `env`, is an "environement" that
   # keeps track of the values stored to variables.
@@ -46,18 +55,17 @@ def evaluate(exp, env)
     # Variable reference: lookup the value corresponded to the variable
     #
     # Advice: env[???]
-    raise(NotImplementedError) # Problem 2
+    env[exp[1]]
 
   when "var_assign"
     # Variable assignment: store (or overwrite) the value to the environment
     #
     # Advice: env[???] = ???
-    raise(NotImplementedError) # Problem 2
+    env[exp[1]] = evaluate(exp[2], env)
 
-
-#
-## Problem 3: Branchs and loops
-#
+  #
+  ## Problem 3: Branchs and loops
+  #
 
   when "if"
     # Branch.  It evaluates either exp[2] or exp[3] depending upon the
@@ -69,16 +77,21 @@ def evaluate(exp, env)
     #   else
     #     ???
     #   end
-    raise(NotImplementedError) # Problem 3
+    if evaluate(exp[1], env)
+      evaluate(exp[2], env)
+    else
+      evaluate(exp[3], env)
+    end
 
   when "while"
     # Loop.
-    raise(NotImplementedError) # Problem 3
+    while evaluate(exp[1], env)
+      evaluate(exp[2], env)
+    end
 
-
-#
-## Problem 4: Function calls
-#
+  #
+  ## Problem 4: Function calls
+  #
 
   when "func_call"
     # Lookup the function definition by the given function name.
@@ -93,15 +106,26 @@ def evaluate(exp, env)
         # MinRuby's `p` method is implemented by Ruby's `p` method.
         p(evaluate(exp[2], env))
       # ... Problem 4
+      when "Integer"
+        Integer(evaluate(exp[2], env))
+      when "fizzbuzz"
+        if evaluate(exp[2], env) % 15 == 0
+          "FizzBuzz"
+        elsif evaluate(exp[2], env) % 3 == 0
+          "Fizz"
+        elsif evaluate(exp[2], env) % 5 == 0
+          "Buzz"
+        else
+          evaluate(exp[2], env)
+        end
       else
         raise("unknown builtin function")
       end
     else
 
-
-#
-## Problem 5: Function definition
-#
+      #
+      ## Problem 5: Function definition
+      #
 
       # (You may want to implement "func_def" first.)
       #
@@ -135,9 +159,9 @@ def evaluate(exp, env)
     raise(NotImplementedError) # Problem 5
 
 
-#
-## Problem 6: Arrays and Hashes
-#
+  #
+  ## Problem 6: Arrays and Hashes
+  #
 
   # You don't need advices anymore, do you?
   when "ary_new"
