@@ -144,7 +144,10 @@ def evaluate(exp, env)
       # (*1) formal parameter: a variable as found in the function definition.
       # For example, `a`, `b`, and `c` are the formal parameters of
       # `def foo(a, b, c)`.
-      raise(NotImplementedError) # Problem 5
+
+      func_args = exp[2..-1].map { |e| evaluate(e, env) }
+      func_env = func[:params].zip(func_args).to_h
+      evaluate(func[:body], func_env)
     end
 
   when "func_def"
@@ -156,7 +159,11 @@ def evaluate(exp, env)
     # All you need is store them into $function_definitions.
     #
     # Advice: $function_definitions[???] = ???
-    raise(NotImplementedError) # Problem 5
+
+    $function_definitions[exp[1]] = {
+      params: exp[2],
+      body: exp[3],
+    }
 
 
   #
