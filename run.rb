@@ -3,7 +3,7 @@ require 'colorize'
 require 'pp'
 require 'stringio'
 
-MY_PROGRAM = 'interp.rb'
+MY_PROGRAM = 'interp.rb interp.rb interp.rb'
 
 Dir.glob('test*.rb').sort.each do |f|
   correct = `ruby -I. -rfizzbuzz #{f}`
